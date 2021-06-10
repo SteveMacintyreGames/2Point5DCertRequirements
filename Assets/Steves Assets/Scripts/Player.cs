@@ -13,28 +13,41 @@ public class Player : MonoBehaviour
   private Vector3 _velocity;
   private float _yVelocity;
   private bool _canDoubleJump;
+  private bool _jumping = false;
 
   private CharacterController _controller;
+  private Animator _anim;
+  private Vector3 facing;
+  private float horizontalInput;
 
     void Start()
     {
         _controller = GetComponent<CharacterController>();
-
+        _anim = GetComponentInChildren<Animator>();
+        facing = transform.localEulerAngles;
     }
 
 
     void Update()
     {
-
         
-
         //if grounded
         if(_controller.isGrounded)
         {
-            float horizontalInput = Input.GetAxis("Horizontal");
+            horizontalInput = Input.GetAxisRaw("Horizontal");
             _direction = new Vector3(0f,0f,horizontalInput);
             _velocity = _direction * _speed;
-            //do nothing
+
+            if(_jumping)
+            {
+                _jumping = false;
+                _anim.SetBool("Jump", _jumping);
+            }
+            
+
+                
+            _anim.SetFloat("Speed", Mathf.Abs(horizontalInput));
+            
 
             //if jump
             if(Input.GetKeyDown(KeyCode.Space))
@@ -42,6 +55,8 @@ public class Player : MonoBehaviour
                 //adjust jump height
                 _yVelocity = _jumpHeight;
                 _canDoubleJump = true;
+                _jumping = true;
+                _anim.SetBool("Jump", _jumping);
             }
 
         }
@@ -60,7 +75,11 @@ public class Player : MonoBehaviour
         _controller.Move(_velocity * Time.deltaTime);
        
         
-        //calculate direction based on user inputs
+        if (horizontalInput != 0)
+        {
+            facing.y = _direction.z >0 ? 0:180;
+            transform.localEulerAngles = facing;
+        }
 
 
     }
