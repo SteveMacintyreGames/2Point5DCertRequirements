@@ -20,6 +20,9 @@ public class Player : MonoBehaviour
   private Vector3 facing;
   private float horizontalInput;
 
+
+
+
     void Start()
     {
         _controller = GetComponent<CharacterController>();
@@ -30,8 +33,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        
-        //if grounded
+
         if(_controller.isGrounded)
         {
             horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -82,5 +84,12 @@ public class Player : MonoBehaviour
         }
 
 
+    }
+
+    public void LedgeGrab(Vector3 handPos)
+    {
+        _controller.enabled = false;
+        _anim.SetBool("GrabLedge", true);
+        transform.position = handPos;        
     }
 }
