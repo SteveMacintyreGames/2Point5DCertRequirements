@@ -121,7 +121,7 @@ public class Player : MonoBehaviour
     {
         Debug.Log("FinishedClimbing");
         _anim.SetBool("GrabLedge", false);
-        transform.position += new Vector3 (0f, 7f, .5f);
+        transform.position += new Vector3 (0f, 6.68f, 1.08f);
         _controller.enabled=true;
         transform.parent = null;
         
