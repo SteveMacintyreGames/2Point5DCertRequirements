@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
   private Animator _anim;
   private Vector3 facing;
   private float horizontalInput;
+  private bool _isHanging;
 
 
 
@@ -33,7 +34,13 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        CheckController();
+        FlipCharacter();
+        CheckOnLedge();
+    }
 
+    private void CheckController()
+    {
         if(_controller.isGrounded)
         {
             horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -77,19 +84,46 @@ public class Player : MonoBehaviour
         _controller.Move(_velocity * Time.deltaTime);
        
         
+
+
+    }
+
+    private void FlipCharacter()
+    {
         if (horizontalInput != 0)
         {
             facing.y = _direction.z >0 ? 0:180;
             transform.localEulerAngles = facing;
         }
+    }
 
-
+    private void CheckOnLedge()
+    {
+        if(_isHanging && Input.GetKeyDown(KeyCode.E))
+        {
+            _anim.SetTrigger("ClimbUp");
+            _isHanging = false;
+        }
     }
 
     public void LedgeGrab(Vector3 handPos)
     {
         _controller.enabled = false;
-        _anim.SetBool("GrabLedge", true);
-        transform.position = handPos;        
+        _anim.SetBool   ("GrabLedge" , true);
+        _anim.SetFloat ("Speed",0);
+        _anim.SetBool("Jump", false);
+        _isHanging = true;
+
+        transform.position = handPos;     
+    }
+
+    public void FinishedClimbing()
+    {
+        Debug.Log("FinishedClimbing");
+        _anim.SetBool("GrabLedge", false);
+        transform.position += new Vector3 (0f, 7f, .5f);
+        _controller.enabled=true;
+        transform.parent = null;
+        
     }
 }
