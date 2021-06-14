@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
   //gravity  
   //jumpHeight
   [SerializeField] private float _speed = 8f, _gravity =1f ,_jumpHeight = 15f;
+  [SerializeField] private int _collectibles;
   //direction
   private Vector3 _direction;
   private Vector3 _velocity;
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
         _controller = GetComponent<CharacterController>();
         _anim = GetComponentInChildren<Animator>();
         facing = transform.localEulerAngles;
+        _collectibles = 0;
     }
 
 
@@ -125,5 +127,11 @@ public class Player : MonoBehaviour
         _controller.enabled=true;
         transform.parent = null;
         
+    }
+
+    public void GetCollectible()
+    {
+        _collectibles++;
+        UIManager.Instance.UpdateCollectibles(_collectibles);
     }
 }
