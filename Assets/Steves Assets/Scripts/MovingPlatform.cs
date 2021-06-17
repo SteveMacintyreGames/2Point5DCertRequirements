@@ -59,7 +59,7 @@ public class MovingPlatform : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger Entered");
+        //Debug.Log("Trigger Entered");
         if (other.tag == "Player")
         {
             Debug.Log("Player touching");
