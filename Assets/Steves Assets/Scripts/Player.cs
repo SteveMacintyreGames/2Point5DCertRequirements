@@ -22,9 +22,10 @@ public class Player : MonoBehaviour
   private float horizontalInput, verticalInput;
   private bool _isHanging;
   private bool _climbingLadder;
-  public bool movingRight;
+  public bool facingRight;
 
   [SerializeField] private float _climbSpeed = 4f;
+  [SerializeField] private Transform _rollPos;
 
 
 
@@ -45,19 +46,73 @@ public class Player : MonoBehaviour
         CheckOnLedge();
         CheckOnLadder();
         CheckDirection();
+        CheckRoll();
 
     }
 
     private void CheckDirection()
     {
-        if (horizontalInput >0)
+        if (transform.rotation.y == 0)
         {
-            movingRight = true;
+            facingRight = true;
         }
         else
         {
-            movingRight = false;
+            facingRight = false;
         }
+    }
+    private void CheckRoll()
+    {
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _controller.enabled = false;
+            _anim.SetTrigger("Roll");
+            StartCoroutine(RollPlayer());
+        }
+    }
+    public void EndRoll()
+    {
+     
+        Vector3 newPos;
+        newPos = _rollPos.transform.position;
+        //transform.position = newPos;
+        _controller.enabled = true;
+
+
+    }
+
+    IEnumerator RollPlayer()
+    {
+        float distance = 9f; 
+        if(facingRight)
+        {   
+            distance = distance;    
+        }
+        else
+        {
+            distance = -distance;
+        }
+
+       
+        Vector3 newPos = transform.position;
+        newPos.z += distance;
+        if(facingRight)
+        {
+             while(transform.position.z < newPos.z)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, newPos, 5f * Time.deltaTime);
+                yield return 0;
+            }
+        }else
+        {
+              while(transform.position.z > newPos.z)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, newPos, 5f * Time.deltaTime);
+                yield return 0;
+            }
+        }
+       
+        yield return 0;
     }
 
     private void CheckController()
